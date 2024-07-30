@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Reminder App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-section">
+        <h1>Birthday Reminder App</h1>
+        <form id="birthdayForm" action="/api/user" method="POST">
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+        <!-- Success and Error Messages -->
+        <div class="messages">
+          <button id="successButton" class="hide">Success</button>
+          <button id="errorButton" class="hide">Error</button>
+        </div>
+      </div>
+      <div class="user-list-section">
+        <h2>List of Users</h2>
+        <p id="noUsersMessage">No birthdays today.</p>
+        <ul id="userList"></ul>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("birthdayForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault(); // Prevent default form submission
+
+          const form = e.target;
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries()); // Convert form data to object
+
+          try {
+            const response = await fetch("/api/user", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              showMessage("success", result.message);
+              loadUsers(); // Load updated user list
+            } else {
+              showMessage("error", result.message);
+            }
+          } catch (error) {
+            showMessage(
+              "error",
+              error.message || "An unexpected error occurred"
+            );
+          }
+        });
+
+      // Fetch and display users
+      async function loadUsers() {
+        try {
+          const response = await fetch("/api/users");
+          const {data: users} = await response.json();
+          const userList = document.getElementById("userList");
+          const noUsersMessage = document.getElementById("noUsersMessage");
+          console.log(users,"I am")
+
+          userList.innerHTML = ""; // Clear the list
+
+          if (users.length === 0) {
+            noUsersMessage.classList.remove("hidden");
+            userList.classList.add("hidden");
+          } else {
+            noUsersMessage.classList.add("hidden");
+            userList.classList.remove("hidden");
+            console.log(users,"I am the user here");
+
+            users.forEach((user) => {
+              const li = document.createElement("li");
+              li.classList.add("user-item");
+                li.innerHTML = `
+                    <div class="username">Username: ${user.username}</div>
+                    <div class="email">Email: ${user.email}</div>
+                    <div class="dob">DOB: ${new Date(user.dob).toDateString()}</div>
+                `;
+                userList.appendChild(li);
+            });
+          }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            res.status(500).json({ message: "Failed to load users." });
+        }
+      }
+
+      function showMessage(type, message) {
+        const successButton = document.getElementById("successButton");
+        const errorButton = document.getElementById("errorButton");
+
+        // Hide both messages initially
+        successButton.classList.add("hide");
+        errorButton.classList.add("hide");
+
+        if (type === "success") {
+          successButton.textContent = message || "User created successfully";
+          successButton.classList.remove("hide");
+        } else if (type === "error") {
+          errorButton.textContent = message || "Error creating user";
+          errorButton.classList.remove("hide");
+        }
+
+        // Optional: Hide the message after a few seconds
+        setTimeout(() => {
+          successButton.classList.add("hide");
+          errorButton.classList.add("hide");
+        }, 5000); // Hide after 5 seconds
+      }
+
+      // Load users on page load
+      window.onload = loadUsers;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,181 @@
+/* Existing styles */
+
+/* Base styles */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Changed from center to flex-start */
+    height: 100vh;
+}
+
+.container {
+    display: flex; /* Use Flexbox to arrange child elements side-by-side */
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    width: 100%;
+    max-width: 1200px; /* Increased max-width for more space */
+    padding: 20px;
+    gap: 20px; /* Space between the two sections */
+    box-sizing: border-box;
+}
+
+.form-section, .user-list-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px; /* Ensure sections are not too wide */
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+
+/* Form section styling */
+.form-section {
+    flex: 1;
+    margin-right: 20px;
+}
+
+/* User list section styling */
+.user-list-section {
+    flex: 1;
+}
+
+/* User list styling */
+.user-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+.user-list .user-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f0f8ff; /* Light background color */
+    margin-bottom: 10px; /* Space between list items */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+}
+
+.user-list .user-item .username {
+    font-weight: bold;
+    color: #333;
+}
+
+.user-list .user-item .email,
+.user-list .user-item .dob {
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Styling for empty list message */
+.hidden {
+    display: none;
+}
+
+.user-list-section p {
+    color: #666;
+    font-style: italic;
+}
+
+/* Base styles for message buttons */
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.messages button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    margin: 5px;
+    width: 150px;
+}
+
+#successButton {
+    background-color: #28a745; /* Green */
+}
+
+#errorButton {
+    background-color: #dc3545; /* Red */
+}
+
+.hide{
+    display: none;
+}
+
+/* Responsive styles */
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-section, .user-list-section {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .form-section {
+        margin-bottom: 0;
+    }
+}

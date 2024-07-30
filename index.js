@@ -1,5 +1,4 @@
 const express = require("express");
-const port = 3000;
 const app = express();
 const cron = require("node-cron");
 const User = require("./models/user.model.js");
@@ -12,6 +11,12 @@ dotenv.config();
 app.use(morgan("dev"));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const port = process.env.PORT || 3000;
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, "public")));
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -31,47 +36,49 @@ const sendMessage = () => {
 // sendMessage();
 
 app.post("/api/user", async (req, res) => {
-  const { name, email, username } = req.body;
-  if (!name || !email || !username) {
+  const { username, email, dob } = req.body;
+  console.log(req.body);
+  if (!username || !email || !dob) {
     return res.status(400).json({ message: "Please provide all the fields" });
   }
-  const user = User.findOne({ email });
-    if (user) {
-        return res.status(400).json({ message: "User already exists" });
-    }
 
-    try{
-        const newUser = new User({
-            name,
-            email,
-            username
-        });
-        const savedUser = await newUser.save();
-        res.status(201).json({success: true, data: savedUser});
+  const user = await User.findOne({ email });
+  if (user) {
+    return res.status(400).json({ message: "User already exists" });
+  }
 
-    }catch(err){
-        return res.status(500).json({
-            success: false,
-            message: "An error occured while creating User"
-        })
-    }
-
+  try {
+    const newUser = new User({
+      username,
+      email,
+      dob,
+    });
+    const savedUser = await newUser.save();
+    res.status(201).json({ success: true, data: savedUser });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "An error occured while creating User",
+    });
+  }
 });
 
-app.get("/api/user", async (req, res) => {
-    try{
-        const users = await User.find();
-        res.status(200).json({success: true, data: users});
-    }catch(err){
-        return res.status(500).json({
-            success: false,
-            message: "An error occured while fetching Users"
-        })
-    }
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ success: true, data: users });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "An error occured while fetching Users",
+    });
+  }
 });
-app.get("/", (req, res)=>{
-    res.sendFile(path.join(_dirname, "public", "index.html"))
-})
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
