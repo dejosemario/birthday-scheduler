@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const cron = require("node-cron");
 const User = require("./models/user.model.js");
 const path = require("path");
 const morgan = require("morgan");
@@ -26,14 +25,6 @@ mongoose
   .catch((err) => {
     console.log("Error connecting to the database", err);
   });
-
-const sendMessage = () => {
-  cron.schedule("*/10 * * * * *", () => {
-    console.log("running a task every minute");
-  });
-};
-
-// sendMessage();
 
 app.post("/api/user", async (req, res) => {
   const { username, email, dob } = req.body;
